@@ -13,29 +13,10 @@ public class SearchAsyncTests
     {
         // Given
         var desiredTravel = new Connection("GRU", "CDG");
+        var expectedRoute = GetExpectedRoute();
+        var expected = GetExpectedResponse(expectedRoute);
 
-        var travelRoute1 = new TravelConnection(source: "GRU", destination: "BRC", amount: 10);
-        var travelRoute2 = new TravelConnection(source: "BRC", destination: "SCL", amount: 5);
-        var travelRoute3 = new TravelConnection(source: "GRU", destination: "CDG", amount: 75);
-        var travelRoute4 = new TravelConnection(source: "GRU", destination: "SCL", amount: 20);
-        var travelRoute5 = new TravelConnection(source: "GRU", destination: "ORL", amount: 56);
-        var travelRoute6 = new TravelConnection(source: "ORL", destination: "CDG", amount: 5);
-        var travelRoute7 = new TravelConnection(source: "SCL", destination: "ORL", amount: 20);
-
-        var expectedRoute = BuildExpectedRoute((travelRoute1.Connection.StartingPoint, 0),
-            (travelRoute1.Connection.Destination, travelRoute1.Amount),
-            (travelRoute2.Connection.Destination, travelRoute2.Amount),
-            (travelRoute7.Connection.Destination, travelRoute7.Amount),
-            (travelRoute6.Connection.Destination, travelRoute6.Amount));
-
-        var expected = Substitute.For<ICheapestTravelResponse>();
-        expected.BestTravelRoute.Returns(expectedRoute);
-        expected.TotalAmount.Returns((Money)expectedRoute.Sum(x => x.connectionAmount));
-        expected.StartingPoint.Returns((Location)"GRU");
-
-        var repo = Substitute.For<ITravelConnectionRepository>();
-        var logger = Substitute.For<ILogger<CheapestTravelSearchEngine>>();
-
+        var repo = GetRepository();
         var command = GetCommand(desiredTravel);
 
         var sut = new CheapestTravelSearchEngine(repo, x => Console.WriteLine(x));
@@ -50,10 +31,54 @@ public class SearchAsyncTests
         result.Value.TotalAmount.Should().Be(40);
     }
 
+    private ITravelConnectionRepository GetRepository()
+    {
+        var repo = Substitute.For<ITravelConnectionRepository>();
+
+        repo.GetConnectionLocations(Arg.Any<Location>(), Arg.Any<Location>()).Returns(GetConnectionList());
+        return repo;
+    }
+
+    private ICheapestTravelResponse GetExpectedResponse(LinkedList<(Location location, Money connectionAmount)> expectedRoute)
+    {
+        var expected = Substitute.For<ICheapestTravelResponse>();
+        expected.BestTravelRoute.Returns(expectedRoute);
+        expected.TotalAmount.Returns((Money)expectedRoute.Sum(x => x.connectionAmount));
+        expected.StartingPoint.Returns((Location)"GRU");
+
+        return expected;
+    }
+
+    private LinkedList<(Location location, Money connectionAmount)> GetExpectedRoute()
+    {
+        var list = GetConnectionList();
+
+        var (travelRoute1, travelRoute2, travelRoute3, travelRoute4, travelRoute5, travelRoute6, travelRoute7) 
+            = (list[0], list[1], list[2], list[3], list[4], list[5], list[6]);
+
+        var expectedRoute = BuildExpectedRoute((travelRoute1.Connection.StartingPoint, 0),
+            (travelRoute1.Connection.Destination, travelRoute1.Amount),
+            (travelRoute2.Connection.Destination, travelRoute2.Amount),
+            (travelRoute7.Connection.Destination, travelRoute7.Amount),
+            (travelRoute6.Connection.Destination, travelRoute6.Amount));
+
+        return expectedRoute;
+    }
+
+    private List<TravelConnection> GetConnectionList() => new List<TravelConnection>
+    {
+        new TravelConnection(source: "GRU", destination: "BRC", amount: 10),
+        new TravelConnection(source: "BRC", destination: "SCL", amount: 5),
+        new TravelConnection(source: "GRU", destination: "CDG", amount: 75),
+        new TravelConnection(source: "GRU", destination: "SCL", amount: 20),
+        new TravelConnection(source: "GRU", destination: "ORL", amount: 56),
+        new TravelConnection(source: "ORL", destination: "CDG", amount: 5),
+        new TravelConnection(source: "SCL", destination: "ORL", amount: 20),
+    };
+
     private ISearchTravelCommand GetCommand(Connection connection)
     {
         var command = Substitute.For<ISearchTravelCommand>();
-
         command.From.Returns(connection.StartingPoint);
         command.To.Returns(connection.Destination);
 
@@ -63,11 +88,8 @@ public class SearchAsyncTests
     private LinkedList<(Location location, Money connectionAmount)> BuildExpectedRoute(params (Location, Money)[] data)
     {
         var travelRoute = new LinkedList<(Location, Money)>();
-
         foreach (var element in data)
-        {
             travelRoute.AddLast(element);
-        }
 
         return travelRoute;
     }
