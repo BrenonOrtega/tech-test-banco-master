@@ -1,12 +1,11 @@
 using Awarean.Sdk.ValueObjects;
-using TechTest.BancoMaster.Travels.Domain.RouteCalculation;
+using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.Travels;
-using Microsoft.Extensions.Logging;
 using TechTest.BancoMaster.Travels.Domain.Travels.Repositories;
 
-namespace TechTest.BancoMaster.Travels.UnitTests.Application.SearchEngine.CheapestSearchEngineTests;
+namespace TechTest.BancoMaster.Travels.UnitTests.Application.SearchEngine.TravelGraphSearchEngineTests;
 
-public class SearchAsyncTests
+public class MakeDirectedGraphTests
 {
     [Fact]
     public async Task Searching_Between_Locations_Should_Return_Cheapest_Travel_Path()
@@ -18,17 +17,16 @@ public class SearchAsyncTests
 
         var repo = GetRepository();
         var command = GetCommand(desiredTravel);
+        var nodeBuilder = Substitute.For<ITravelNodeBuilder>();
+        var graphBuilder = Substitute.For<ITravelGraphBuilder>();
 
-        var sut = new CheapestTravelSearchEngine(repo, x => Console.WriteLine(x));
+        var sut = new TravelGraphSearchEngine(repo, graphBuilder,nodeBuilder, x => Console.WriteLine(x));
 
         // When
-        var result = await sut.SearchAsync(command);
+        var result = await sut.MakeDirectedGraphAsync(command);
 
         // Then
         result.IsSuccess.Should().BeTrue();
-        result.Value.StartingPoint.Should().Equals(desiredTravel.StartingPoint);
-        result.Value.Destination.Should().Equals(desiredTravel.StartingPoint);
-        result.Value.TotalAmount.Should().Be(40);
     }
 
     private ITravelConnectionRepository GetRepository()
@@ -65,15 +63,15 @@ public class SearchAsyncTests
         return expectedRoute;
     }
 
-    private List<TravelConnection> GetConnectionList() => new List<TravelConnection>
+    private List<Travel> GetConnectionList() => new List<Travel>
     {
-        new TravelConnection(source: "GRU", destination: "BRC", amount: 10),
-        new TravelConnection(source: "BRC", destination: "SCL", amount: 5),
-        new TravelConnection(source: "GRU", destination: "CDG", amount: 75),
-        new TravelConnection(source: "GRU", destination: "SCL", amount: 20),
-        new TravelConnection(source: "GRU", destination: "ORL", amount: 56),
-        new TravelConnection(source: "ORL", destination: "CDG", amount: 5),
-        new TravelConnection(source: "SCL", destination: "ORL", amount: 20),
+        new Travel(source: "GRU", destination: "BRC", amount: 10),
+        new Travel(source: "BRC", destination: "SCL", amount: 5),
+        new Travel(source: "GRU", destination: "CDG", amount: 75),
+        new Travel(source: "GRU", destination: "SCL", amount: 20),
+        new Travel(source: "GRU", destination: "ORL", amount: 56),
+        new Travel(source: "ORL", destination: "CDG", amount: 5),
+        new Travel(source: "SCL", destination: "ORL", amount: 20),
     };
 
     private ISearchTravelCommand GetCommand(Connection connection)

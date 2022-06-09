@@ -5,7 +5,7 @@ namespace TechTest.BancoMaster.Travels.UnitTests.Domain.Travels.LocationTests;
 public class BehaviorTests
 {
     [Fact]
-    public void string_Should_Be_Convertible_To_Location()
+    public void String_Should_Be_Convertible_To_Location()
     {
         // Given
         var validName = "CBG";
