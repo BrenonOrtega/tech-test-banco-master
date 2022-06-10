@@ -1,9 +1,8 @@
 using System.Text;
 using Awarean.Sdk.ValueObjects;
-using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
-namespace TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation
+namespace TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation.Contracts
 {
     public class CheapestTravelResponse : ICheapestTravelResponse
     {

@@ -1,7 +1,9 @@
-﻿using TechTest.BancoMaster.Travels.Domain.Structures;
+﻿using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation.Models;
+using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation.Builders;
+using TechTest.BancoMaster.Travels.Domain.Structures;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
-namespace TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
+namespace TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
 public class TravelNodeBuilder : ITravelNodeBuilder
 {
     private LocationNode _instance;

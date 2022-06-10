@@ -1,5 +1,7 @@
 using Awarean.Sdk.ValueObjects;
-using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
+using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
+using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation.Contracts;
+using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation.Builders;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 using TechTest.BancoMaster.Travels.Domain.Travels.Repositories;
 using static TechTest.BancoMaster.Travels.UnitTests.Fixtures.FixtureHelper;
@@ -27,7 +29,7 @@ public class MakeDirectedGraphTests
         // Then
         result.IsSuccess.Should().BeTrue();
         graph.Nodes.Should().HaveCount(expectedCount);
-        
+
     }
 
     private ITravelRepository GetRepository()
@@ -52,7 +54,7 @@ public class MakeDirectedGraphTests
     {
         var list = GetTravelList();
 
-        var (travelRoute1, travelRoute2, travelRoute3, travelRoute4, travelRoute5, travelRoute6, travelRoute7) 
+        var (travelRoute1, travelRoute2, travelRoute3, travelRoute4, travelRoute5, travelRoute6, travelRoute7)
             = (list[0], list[1], list[2], list[3], list[4], list[5], list[6]);
 
         var expectedRoute = BuildExpectedRoute((travelRoute1.Connection.StartingPoint, 0),
@@ -64,7 +66,7 @@ public class MakeDirectedGraphTests
         return expectedRoute;
     }
 
-    
+
     private ISearchTravelCommand GetCommand(Connection connection)
     {
         var command = Substitute.For<ISearchTravelCommand>();

@@ -1,4 +1,4 @@
-namespace TechTest.BancoMaster.Travels.Domain.Structures
+/* namespace TechTest.BancoMaster.Travels.Domain.Structures
 {
     public class PathFinder<TNode, TWeight>
     {
@@ -58,7 +58,7 @@ namespace TechTest.BancoMaster.Travels.Domain.Structures
 
         private static List<Record> CreateInitialRecords(Node<TNode,TWeight> node, DirectedGraph<TNode, TWeight> graph)
         {
-            var records = graph.Node<TNode,TWeight>s
+            var records = graph.Node<TNode, TWeight>
                 .Select(Record.Create)
                 .ToList();
 
@@ -208,4 +208,4 @@ namespace TechTest.BancoMaster.Travels.Domain.Structures
             return new PathSegment<TNode, TWeight>(origin, destination, weigth);
         }
     }
-}
+} */

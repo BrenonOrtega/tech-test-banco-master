@@ -1,8 +1,8 @@
-﻿using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
+﻿using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.Structures;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
-namespace TechTest.BancoMaster.Travels.UnitTests.Domain.CheapestRouteCalculation.TravelGraphBuilderTests;
+namespace TechTest.BancoMaster.Travels.UnitTests.Application.CheapestRouteCalculation.TravelGraphBuilderTests;
 public class BuildingGraphTests
 {
     [Fact]

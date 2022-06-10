@@ -1,10 +1,12 @@
 using Awarean.Sdk.Result;
 using Awarean.Sdk.ValueObjects;
+using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
+using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation.Builders;
 using TechTest.BancoMaster.Travels.Domain.Extensions;
 using TechTest.BancoMaster.Travels.Domain.Structures;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
-namespace TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
+namespace TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
 
 public class TravelGraphBuildEngine : ITravelGraphBuildEngine
 {

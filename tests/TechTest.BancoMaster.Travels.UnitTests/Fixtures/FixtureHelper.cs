@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 

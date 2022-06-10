@@ -1,7 +1,7 @@
-﻿using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
+﻿using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
-namespace TechTest.BancoMaster.Travels.UnitTests.Domain.CheapestRouteCalculation.TravelNodeBuilderTests;
+namespace TechTest.BancoMaster.Travels.UnitTests.Application.CheapestRouteCalculation.TravelNodeBuilderTests;
 
 public class BuildingNodeTests
 {

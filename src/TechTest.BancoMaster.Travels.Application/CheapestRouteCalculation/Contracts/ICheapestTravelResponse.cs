@@ -2,7 +2,7 @@
 using Awarean.Sdk.ValueObjects;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
-namespace TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
+namespace TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation.Contracts;
 
 public interface ICheapestTravelResponse
 {
