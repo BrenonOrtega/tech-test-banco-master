@@ -7,31 +7,31 @@ namespace TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
 
 public class TravelGraphBuilder : ITravelGraphBuilder
 {
-    private readonly Dictionary<string, Node<Location, decimal>> _nodes = new();
+    private readonly Dictionary<string, Node> _nodes = new();
 
-    public IGraphBuilder<Location, decimal> AddLink(Location source, Location destination, decimal weight)
+    public IGraphBuilder AddLink(Location source, Location destination, decimal weight)
     {
         var exists = _nodes.TryGetValue(source, out var node);
-        
-        if(exists)
-            node.AddLink(new LocationLink(destination, weight));
-        
+
+        if (exists)
+            node.AddLink(new LocationLink(node.Name, destination, weight));
+
         return this;
     }
 
-    public IGraphBuilder<Location, decimal> AddNode(Node<Location, decimal> node)
+    public IGraphBuilder AddNode(Node node)
     {
-        if(_nodes.ContainsKey(node.Id) is false)
+        if (_nodes.ContainsKey(node.Name) is false)
         {
-            _nodes.Add(node.Id, node);
+            _nodes.Add(node.Name, node);
         }
 
         return this;
     }
 
-    public DirectedGraph<Location, decimal> Build()
+    public DirectedGraph Build()
     {
-        var graph = new DirectedGraph<Location, decimal>();
+        var graph = new DirectedGraph();
 
         graph.AddNodes(_nodes.Select(x => x.Value));
 
@@ -40,7 +40,7 @@ public class TravelGraphBuilder : ITravelGraphBuilder
         return graph;
     }
 
-    public IGraphBuilder<Location, decimal> Clear()
+    public IGraphBuilder Clear()
     {
         _nodes.Clear();
 

@@ -1,10 +1,10 @@
 /* namespace TechTest.BancoMaster.Travels.Domain.Structures
 {
-    public class PathFinder<TNode, TWeight>
+    public class PathFinder
     {
-        private readonly DirectedGraph<TNode, TWeight> _graph;
+        private readonly DirectedGraph _graph;
 
-        public PathFinder(DirectedGraph<TNode, TWeight> graph)
+        public PathFinder(DirectedGraph graph)
         {
             if (graph == null)
                 throw new ArgumentException("Cannot create path finder with null graph.");
@@ -26,7 +26,7 @@
             return Build(origin, destination, Process(origin, destination, _graph));
         }
 
-        private static List<Record> Process(Node<TNode,TWeight> origin, Node<TNode,TWeight> destination, DirectedGraph<TNode, TWeight> graph)
+        private static List<Record> Process(Node<TNode,TWeight> origin, Node<TNode,TWeight> destination, DirectedGraph graph)
         {
             var visited = new List<Node<TNode,TWeight>>();
 
@@ -56,9 +56,9 @@
             return records;
         }
 
-        private static List<Record> CreateInitialRecords(Node<TNode,TWeight> node, DirectedGraph<TNode, TWeight> graph)
+        private static List<Record> CreateInitialRecords(Node<TNode,TWeight> node, DirectedGraph graph)
         {
-            var records = graph.Node<TNode, TWeight>
+            var records = graph.Node
                 .Select(Record.Create)
                 .ToList();
 
@@ -88,7 +88,7 @@
             return Math.Abs(currentRecord.Weight - double.MaxValue) < double.Epsilon;
         }
 
-        private static Record NextRecord(Link<TNode, TWeight> link, IEnumerable<Record> records)
+        private static Record NextRecord(Link link, IEnumerable<Record> records)
         {
             return records.Single(record => record.Vertex.Source.Equals(link.Destination));
         }
@@ -123,9 +123,9 @@
             return records.Single(record => record.Vertex == destination);
         }
 
-        private static PathSegment<TNode, TWeight> CreateSegment(Record currentRecord)
+        private static PathSegment CreateSegment(Record currentRecord)
         {
-            return PathSegment<TNode, TWeight>.Create(currentRecord.PreviousVertex, currentRecord.Vertex,
+            return PathSegment.Create(currentRecord.PreviousVertex, currentRecord.Vertex,
                 currentRecord.PreviousVertex.Links.Single(link => link.Destination == currentRecord.Vertex).Weight);
         }
 
@@ -164,48 +164,48 @@
             }
         }
     }
-    public class Path<TNode, TWeight>
+    public class Path
     {
-        private readonly List<PathSegment<TNode, TWeight>> _segments;
+        private readonly List<PathSegment> _segments;
 
-        private Path(Node<TNode, TWeight> origin)
+        private Path(Node origin)
         {
             Origin = origin;
-            _segments = new List<PathSegment<TNode, TWeight>>();
+            _segments = new List<PathSegment>();
         }
 
-        public Node<TNode, TWeight> Origin { get; }
-        public Node<TNode, TWeight> Destination { get; private set; }
-        public IReadOnlyList<PathSegment<TNode, TWeight>> Segments => _segments;
+        public Node Origin { get; }
+        public Node Destination { get; private set; }
+        public IReadOnlyList<PathSegment> Segments => _segments;
 
-        internal static Path<TNode, TWeight> Create(Node<TNode, TWeight> origin)
+        internal static Path Create(Node origin)
         {
-            return new Path<TNode, TWeight>(origin);
+            return new Path(origin);
         }
 
-        internal void AddSegment(PathSegment<TNode, TWeight> segment)
+        internal void AddSegment(PathSegment segment)
         {
             Destination = segment.Destination;
             _segments.Add(segment);
         }
     }
 
-    public class PathSegment<TNode, TWeight>
+    public class PathSegment
     {
-        private PathSegment(Node<TNode, TWeight> origin, Node<TNode, TWeight> destination, double weight)
+        private PathSegment(Node origin, Node destination, double weight)
         {
             Weight = weight;
             Origin = origin;
             Destination = destination;
         }
 
-        public Node<TNode, TWeight> Origin { get; }
-        public Node<TNode, TWeight> Destination { get; }
+        public Node Origin { get; }
+        public Node Destination { get; }
         public double Weight { get; }
 
-        internal static PathSegment<TNode, TWeight> Create(Node<TNode, TWeight> origin, Node<TNode, TWeight> destination, double weigth)
+        internal static PathSegment Create(Node origin, Node destination, double weigth)
         {
-            return new PathSegment<TNode, TWeight>(origin, destination, weigth);
+            return new PathSegment(origin, destination, weigth);
         }
     }
 } */

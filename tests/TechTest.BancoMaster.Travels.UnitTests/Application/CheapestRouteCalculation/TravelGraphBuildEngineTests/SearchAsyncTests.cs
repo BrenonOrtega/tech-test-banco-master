@@ -25,7 +25,7 @@ public class MakeDirectedGraphTests
         var result = sut.BuildGraph(travelList);
         var graph = result.Value;
 
-        var expectedCount = travelList.DistinctBy(x => x.Connection.Destination).Count();
+        var expectedCount = GetPlaces().Count();
         // Then
         result.IsSuccess.Should().BeTrue();
         graph.Nodes.Should().HaveCount(expectedCount);

@@ -9,7 +9,7 @@ namespace TechTest.BancoMaster.Travels.UnitTests.Application.CheapestRouteCalcul
 public class FindShortestPathTests
 {
     [Fact]
-    public void TestName()
+    public void Searching_Shortest_Path_Should_Pass()
     {
         // Given
         var travelList = GetTravelList();
@@ -20,7 +20,10 @@ public class FindShortestPathTests
         var sut = new CheapestTravelFinder(engine, x => Trace.WriteLine(x));
         // When
         var result = sut.FindShortestPath(startingPoint, destination, travelList);
+
         // Then
+        result.IsSuccess.Should().BeTrue();
+        result.Value[destination].Should().Be(40);
     }
 
     [Fact]

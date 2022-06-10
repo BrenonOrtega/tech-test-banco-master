@@ -11,7 +11,7 @@ public class BehaviorTests
         var expected = "BRB";
         // Given
         var sut = new MockNode(expected);
-        var link = new Link<Location, int>(new Location("CRG"), 10);
+        var link = new Link(expected, new Location("CRG"), 10);
         // When
         sut.AddLink(link);
 

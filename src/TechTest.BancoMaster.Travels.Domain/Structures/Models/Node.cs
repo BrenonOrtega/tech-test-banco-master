@@ -3,25 +3,24 @@ using TechTest.BancoMaster.Travels.Domain.Extensions;
 
 namespace TechTest.BancoMaster.Travels.Domain.Structures;
 
-public record Node<TNode, TWeight>(TNode Source)
+public record Node(string Name)
 {
-    public virtual string Id { get; }
-    private readonly List<Link<TNode, TWeight>> _links = new();
+    private readonly List<Link> _links = new();
 
-    public IReadOnlyList<Link<TNode, TWeight>> Links { get => _links; }
+    public IReadOnlyList<Link> Links { get => _links; }
 
-    public virtual void AddLink(Link<TNode, TWeight> link)
+    public virtual void AddLink(Link link)
     {
         CheckExistence(link);
         _links.Add(link);
     }
-    public virtual void AddLinks(IEnumerable<Link<TNode, TWeight>> links)
+    public virtual void AddLinks(IEnumerable<Link> links)
     {
         CheckExistence(links);
         _links.AddRange(links);
     }
 
-    private void CheckExistence(Link<TNode, TWeight> link)
+    private void CheckExistence(Link link)
     {
         var exists = _links.Exists(x => x == link);
 
@@ -29,7 +28,7 @@ public record Node<TNode, TWeight>(TNode Source)
             throw new ArgumentException($"The link {link} already exists");
     }
 
-    private void CheckExistence(IEnumerable<Link<TNode, TWeight>> links)
+    private void CheckExistence(IEnumerable<Link> links)
     {
         var haveRepetition = links.GroupBy(x => x.Destination).Any(x => x.Count() > 1);
         if (haveRepetition)

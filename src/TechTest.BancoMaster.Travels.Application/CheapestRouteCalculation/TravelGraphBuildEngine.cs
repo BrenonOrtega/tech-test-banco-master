@@ -22,13 +22,13 @@ public class TravelGraphBuildEngine : ITravelGraphBuildEngine
         _log = log ?? EmptyLog;
     }
 
-    public Result<DirectedGraph<Location, decimal>> BuildGraph(IEnumerable<Travel> travelList)
+    public Result<DirectedGraph> BuildGraph(IEnumerable<Travel> travelList)
     {
         try
         {
             var graph = MakeGraphFromTravels(travelList);
 
-            return Result<DirectedGraph<Location, decimal>>.Success(graph);
+            return Result<DirectedGraph>.Success(graph);
         }
         catch (Exception ex)
         {
@@ -36,7 +36,7 @@ public class TravelGraphBuildEngine : ITravelGraphBuildEngine
         }
     }
 
-    private DirectedGraph<Location, decimal> MakeGraphFromTravels(IEnumerable<Travel> travels)
+    private DirectedGraph MakeGraphFromTravels(IEnumerable<Travel> travels)
     {
         var locations = GetAllLocations(travels);
         _log($"Found a total of {travels.Count()} - {travels.FormatStringFor(x => x.Connection.FromTo)}");
@@ -59,13 +59,13 @@ public class TravelGraphBuildEngine : ITravelGraphBuildEngine
         return graph;
     }
 
-    private Node<Location, decimal> LinkAndBuildNode(IEnumerable<(Location destination, Money weight)> nodeLinks)
+    private Node LinkAndBuildNode(IEnumerable<(Location destination, Money weight)> nodeLinks)
     {
         foreach (var (destination, weight) in nodeLinks)
             _nodeBuilder.LinkTo(destination, weight);
 
         var node = _nodeBuilder.Build();
-        _log($"Graph's node Build for location: {node.Id} containing {node.Links.Count} links to other places - {node.Links.ToFormatString()}");
+        _log($"Graph's node Build for location: {node.Name} containing {node.Links.Count} links to other places - {node.Links.ToFormatString()}");
 
         return node;
     }
@@ -84,10 +84,10 @@ public class TravelGraphBuildEngine : ITravelGraphBuildEngine
         return locations;
     }
 
-    private Result<DirectedGraph<Location, decimal>> HandleException(Exception ex)
+    private Result<DirectedGraph> HandleException(Exception ex)
     {
         var message = $"Failed trying to build graph for travel route, exception happened : {ex}";
         _log(message);
-        return Result<DirectedGraph<Location, decimal>>.Fail("GRAPH_BUILDING_ERROR", message);
+        return Result<DirectedGraph>.Fail("GRAPH_BUILDING_ERROR", message);
     }
 }

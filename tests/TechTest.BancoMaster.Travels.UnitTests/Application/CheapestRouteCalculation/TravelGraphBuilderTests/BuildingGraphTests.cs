@@ -21,7 +21,7 @@ public class BuildingGraphTests
         graph.Nodes.Count.Should().Be(nodeQuantity);
     }
 
-    public static IEnumerable<Node<Location, decimal>> GetNodes(int quantity)
+    public static IEnumerable<Node> GetNodes(int quantity)
     {
         var nodeBuilder = new TravelNodeBuilder();
         var random = new Random();

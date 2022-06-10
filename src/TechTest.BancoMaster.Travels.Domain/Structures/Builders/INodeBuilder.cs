@@ -1,9 +1,9 @@
 namespace TechTest.BancoMaster.Travels.Domain.Structures;
 
-public interface INodeBuilder<TNode, TWeight>
+public interface INodeBuilder
 {
-    INodeBuilder<TNode, TWeight> Create(TNode node);
-    INodeBuilder<TNode, TWeight> LinkTo(TNode other, TWeight weight);
-    Node<TNode, TWeight> Build();
-    INodeBuilder<TNode, TWeight> Clear();
+    INodeBuilder Create(string nodeName);
+    INodeBuilder LinkTo(string otherNodeName, decimal weight);
+    Node Build();
+    INodeBuilder Clear();
 }

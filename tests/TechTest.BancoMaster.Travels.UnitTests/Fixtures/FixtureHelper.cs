@@ -8,14 +8,16 @@ public static class FixtureHelper
 {
     public static List<Travel> GetTravelList() => new List<Travel>
     {
-        new Travel(source: "GRU", destination: "BRC", amount: 10),
-        new Travel(source: "BRC", destination: "SCL", amount: 5),
-        new Travel(source: "GRU", destination: "CDG", amount: 75),
-        new Travel(source: "GRU", destination: "SCL", amount: 20),
-        new Travel(source: "GRU", destination: "ORL", amount: 56),
-        new Travel(source: "ORL", destination: "CDG", amount: 5),
-        new Travel(source: "SCL", destination: "ORL", amount: 20),
+        new Travel(source: "GRU", destination: "BRC", amount: 1000),
+        new Travel(source: "BRC", destination: "SCL", amount: 500),
+        new Travel(source: "GRU", destination: "CDG", amount: 7500),
+        new Travel(source: "GRU", destination: "SCL", amount: 2000),
+        new Travel(source: "GRU", destination: "ORL", amount: 5600),
+        new Travel(source: "ORL", destination: "CDG", amount: 500),
+        new Travel(source: "SCL", destination: "ORL", amount: 2000),
     };
+
+    public static HashSet<Location> GetPlaces() => new() { "GRU", "ORL", "BRC", "SCL", "CDG" };
 
     internal static ITravelGraphBuildEngine GetTravelGraphBuildEngine()
     {

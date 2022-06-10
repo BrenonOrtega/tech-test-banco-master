@@ -6,5 +6,5 @@ namespace TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
 
 public interface ITravelGraphBuildEngine
 {
-    Result<DirectedGraph<Location, decimal>> BuildGraph(IEnumerable<Travel> travelList);
+    Result<DirectedGraph> BuildGraph(IEnumerable<Travel> travelList);
 }

@@ -21,7 +21,7 @@ public class BuildingNodeTests
         var node = sut.Build();
 
         node.Links.Count.Should().Be(4);
-        node.Source.Should().Be((Location)id);
+        node.Name.Should().Be((Location)id);
     }
 
     [Fact]
