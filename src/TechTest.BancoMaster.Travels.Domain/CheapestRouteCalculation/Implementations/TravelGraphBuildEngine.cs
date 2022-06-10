@@ -3,52 +3,42 @@ using Awarean.Sdk.ValueObjects;
 using TechTest.BancoMaster.Travels.Domain.Extensions;
 using TechTest.BancoMaster.Travels.Domain.Structures;
 using TechTest.BancoMaster.Travels.Domain.Travels;
-using TechTest.BancoMaster.Travels.Domain.Travels.Repositories;
 
 namespace TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
 
-public class TravelGraphSearchEngine : ITravelGraphEngine
+public class TravelGraphBuildEngine : ITravelGraphBuildEngine
 {
-    private readonly ITravelConnectionRepository _repository;
     private readonly ITravelGraphBuilder _graphBuilder;
     private readonly ITravelNodeBuilder _nodeBuilder;
     private readonly Action<string> _log;
     private static void EmptyLog(string message) { }
 
-    public TravelGraphSearchEngine(ITravelConnectionRepository repository, ITravelGraphBuilder graphBuilder, ITravelNodeBuilder nodeBuilder, Action<string> log)
+    public TravelGraphBuildEngine(ITravelGraphBuilder graphBuilder, ITravelNodeBuilder nodeBuilder, Action<string> log)
     {
-        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _graphBuilder = graphBuilder ?? throw new ArgumentNullException(nameof(graphBuilder));
         _nodeBuilder = nodeBuilder ?? throw new ArgumentNullException(nameof(nodeBuilder));
         _log = log ?? EmptyLog;
     }
 
-    public async Task<Result<DirectedGraph<Location, decimal>>> MakeDirectedGraphAsync(ISearchTravelCommand command)
+    public Result<DirectedGraph<Location, decimal>> BuildGraph(IEnumerable<Travel> travelList)
     {
         try
         {
-            var query = await _repository.GetConnectionLocations(command.From, command.To);
-
-            if (query == Enumerable.Empty<Travel>())
-                return Result<DirectedGraph<Location, decimal>>.Fail("QUERY_FAILED", "Could not retrieve travels to these locations");
-
-            var travels = query.ToList();
-            var locations = GetAllLocations(travels);
-
-            _log($"Found a total of {travels.Count} - { travels.FormatStringFor(x => x.Connection.FromTo) }");
-
-            var graph = BuildGraph(travels, locations);
+            var graph = MakeGraphFromTravels(travelList);
 
             return Result<DirectedGraph<Location, decimal>>.Success(graph);
-        } 
-        catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             return HandleException(ex);
         }
     }
 
-    private DirectedGraph<Location, decimal> BuildGraph(List<Travel> travels, HashSet<Location> locations)
+    private DirectedGraph<Location, decimal> MakeGraphFromTravels(IEnumerable<Travel> travels)
     {
+        var locations = GetAllLocations(travels);
+        _log($"Found a total of {travels.Count()} - {travels.FormatStringFor(x => x.Connection.FromTo)}");
+
         _log($"Building Graph for {locations.ToFormatString()}");
         foreach (var location in locations)
         {
@@ -73,15 +63,16 @@ public class TravelGraphSearchEngine : ITravelGraphEngine
             _nodeBuilder.LinkTo(destination, weight);
 
         var node = _nodeBuilder.Build();
-        _log($"Graph's node Build for location: {node.Id} containing {node.Links.Count} links to other places - { node.Links.ToFormatString() }");
+        _log($"Graph's node Build for location: {node.Id} containing {node.Links.Count} links to other places - {node.Links.ToFormatString()}");
 
         return node;
     }
 
-    private static HashSet<Location> GetAllLocations(List<Travel> travels)
+    private static HashSet<Location> GetAllLocations(IEnumerable<Travel> travels)
     {
         var locations = new HashSet<Location>();
         var connections = travels.Select(x => x.Connection);
+
         foreach (var connection in connections)
         {
             locations.Add(connection.StartingPoint);

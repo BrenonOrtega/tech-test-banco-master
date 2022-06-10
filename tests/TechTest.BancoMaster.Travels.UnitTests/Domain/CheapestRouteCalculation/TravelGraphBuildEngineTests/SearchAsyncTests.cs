@@ -2,38 +2,39 @@ using Awarean.Sdk.ValueObjects;
 using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 using TechTest.BancoMaster.Travels.Domain.Travels.Repositories;
+using static TechTest.BancoMaster.Travels.UnitTests.Fixtures.FixtureHelper;
 
-namespace TechTest.BancoMaster.Travels.UnitTests.Application.SearchEngine.TravelGraphSearchEngineTests;
+namespace TechTest.BancoMaster.Travels.UnitTests.Application.SearchEngine.TravelGraphBuildEngineTests;
 
 public class MakeDirectedGraphTests
 {
+    private readonly ITravelNodeBuilder _nodeBuilder;
+    private readonly ITravelGraphBuilder _graphBuilder;
+    public MakeDirectedGraphTests() => (_nodeBuilder, _graphBuilder) = (new TravelNodeBuilder(), new TravelGraphBuilder());
+
     [Fact]
-    public async Task Searching_Between_Locations_Should_Return_Cheapest_Travel_Path()
+    public void Valid_Travel_List_Should_Build_Graph()
     {
         // Given
-        var desiredTravel = new Connection("GRU", "CDG");
-        var expectedRoute = GetExpectedRoute();
-        var expected = GetExpectedResponse(expectedRoute);
-
-        var repo = GetRepository();
-        var command = GetCommand(desiredTravel);
-        var nodeBuilder = Substitute.For<ITravelNodeBuilder>();
-        var graphBuilder = Substitute.For<ITravelGraphBuilder>();
-
-        var sut = new TravelGraphSearchEngine(repo, graphBuilder,nodeBuilder, x => Console.WriteLine(x));
+        var travelList = GetTravelList();
+        var sut = new TravelGraphBuildEngine(_graphBuilder, _nodeBuilder, x => Console.WriteLine(x));
 
         // When
-        var result = await sut.MakeDirectedGraphAsync(command);
+        var result = sut.BuildGraph(travelList);
+        var graph = result.Value;
 
+        var expectedCount = travelList.DistinctBy(x => x.Connection.Destination).Count();
         // Then
         result.IsSuccess.Should().BeTrue();
+        graph.Nodes.Should().HaveCount(expectedCount);
+        
     }
 
-    private ITravelConnectionRepository GetRepository()
+    private ITravelRepository GetRepository()
     {
-        var repo = Substitute.For<ITravelConnectionRepository>();
+        var repo = Substitute.For<ITravelRepository>();
 
-        repo.GetConnectionLocations(Arg.Any<Location>(), Arg.Any<Location>()).Returns(GetConnectionList());
+        repo.GetConnectionLocations(Arg.Any<Location>(), Arg.Any<Location>()).Returns(GetTravelList());
         return repo;
     }
 
@@ -49,7 +50,7 @@ public class MakeDirectedGraphTests
 
     private LinkedList<(Location location, Money connectionAmount)> GetExpectedRoute()
     {
-        var list = GetConnectionList();
+        var list = GetTravelList();
 
         var (travelRoute1, travelRoute2, travelRoute3, travelRoute4, travelRoute5, travelRoute6, travelRoute7) 
             = (list[0], list[1], list[2], list[3], list[4], list[5], list[6]);
@@ -63,17 +64,7 @@ public class MakeDirectedGraphTests
         return expectedRoute;
     }
 
-    private List<Travel> GetConnectionList() => new List<Travel>
-    {
-        new Travel(source: "GRU", destination: "BRC", amount: 10),
-        new Travel(source: "BRC", destination: "SCL", amount: 5),
-        new Travel(source: "GRU", destination: "CDG", amount: 75),
-        new Travel(source: "GRU", destination: "SCL", amount: 20),
-        new Travel(source: "GRU", destination: "ORL", amount: 56),
-        new Travel(source: "ORL", destination: "CDG", amount: 5),
-        new Travel(source: "SCL", destination: "ORL", amount: 20),
-    };
-
+    
     private ISearchTravelCommand GetCommand(Connection connection)
     {
         var command = Substitute.For<ISearchTravelCommand>();
