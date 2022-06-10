@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TechTest.BancoMaster.Travels.Domain\TechTest.BancoMaster.Travels.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
