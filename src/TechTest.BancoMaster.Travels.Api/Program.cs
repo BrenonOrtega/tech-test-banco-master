@@ -1,26 +1,17 @@
 ﻿var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
-builder.Services.AddControllers();
+var startup = new Startup(config);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
-var env = app.Environment;
-
-if (env.IsDevelopment() || env.IsEnvironment("Docker"))
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        options.RoutePrefix = string.Empty;
-    });
-}
-app.UseStaticFiles();
-app.UseRouting();
-app.UseEndpoints(x => x.MapControllers());
+startup.Configure(app);
 
 app.Run();
+
+public partial class Program
+{
+
+}
