@@ -1,11 +1,8 @@
-using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation.Models;
-using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation.Builders;
-using TechTest.BancoMaster.Travels.Domain.Structures;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
-namespace TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
+namespace TechTest.BancoMaster.Travels.Domain.Structures;
 
-public class TravelGraphBuilder : ITravelGraphBuilder
+public class GraphBuilder : IGraphBuilder
 {
     private readonly Dictionary<string, Node> _nodes = new();
 
@@ -14,7 +11,7 @@ public class TravelGraphBuilder : ITravelGraphBuilder
         var exists = _nodes.TryGetValue(source, out var node);
 
         if (exists)
-            node.AddLink(new LocationLink(node.Name, destination, weight));
+            node.AddLink(new Link(node.Name, destination, weight));
 
         return this;
     }
