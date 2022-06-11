@@ -17,7 +17,7 @@ public class FindShortestPathTests
         var destination = "CDG";
 
         var engine = FixtureHelper.GetTravelGraphBuildEngine();
-        var sut = new CheapestTravelFinder(engine, x => Trace.WriteLine(x));
+        var sut = new CheapestTravelFinder(engine);
         // When
         var result = sut.FindShortestPath(startingPoint, destination, travelList);
 
@@ -34,7 +34,7 @@ public class FindShortestPathTests
         var travel = travelList[new Random().Next(0, travelList.Count)];
         var engine = GetTravelGraphBuildEngine();
 
-        var sut = new CheapestTravelFinder(engine, x => Trace.WriteLine(x));
+        var sut = new CheapestTravelFinder(engine);
 
         var result = sut.FindShortestPath(inexistentStartingPoint, travel.Connection.Destination, travelList);
 
@@ -50,7 +50,7 @@ public class FindShortestPathTests
         var inexistentDestination = "INEXISTENT_DESTINATION";
         var engine = GetTravelGraphBuildEngine();
 
-        var sut = new CheapestTravelFinder(engine, x => Trace.WriteLine(x));
+        var sut = new CheapestTravelFinder(engine);
 
         var result = sut.FindShortestPath(travel.Connection.StartingPoint, inexistentDestination, travelList);
 

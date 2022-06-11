@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 using TechTest.BancoMaster.Travels.Infra.Travels.Repositories;
+using TechTest.BancoMaster.Travels.UnitTests.Fixtures;
 
 namespace TechTests.BancoMaster.Travels.UnitTests.Infra.Travels.Repositories;
 
@@ -40,5 +41,23 @@ public class TravelRepositoriesTests
 
         updated.Should().Be(update);
         updated.Amount.Should().Be(update.Amount);
+    }
+
+    [Fact]
+    public async Task Getting_Connections_Should_Get_All_Possible_Routes()
+    {
+        var startingPoint = "GRU";
+        var destination = "CDG";
+
+        var locations = FixtureHelper.GetTravelList();
+
+        var logger = Substitute.For<ILogger<TravelRepository>>();
+        var data = new Dictionary<string, Travel>(locations.Select(x => KeyValuePair.Create<string, Travel>(x.Id, x)));
+
+        var sut = new TravelRepository(logger, data);
+
+        var travels = (await sut.GetConnectionLocations(startingPoint, destination)).ToList();
+
+        travels.Count.Should().Be(locations.Count);
     }
 }

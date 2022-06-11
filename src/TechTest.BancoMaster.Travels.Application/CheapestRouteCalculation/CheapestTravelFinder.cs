@@ -1,24 +1,19 @@
 ﻿
 using Awarean.Sdk.Result;
-using System.Diagnostics;
 using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.Structures;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
 namespace TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
 
-public class CheapestTravelFinder
+public class CheapestTravelFinder : ICheapestTravelFinder
 {
     private readonly ITravelGraphBuildEngine _graphEngine;
-    private readonly Action<string> _log;
-    private static Action<string> _trace = msg => Trace.WriteLine(msg);
 
-    public CheapestTravelFinder(ITravelGraphBuildEngine graphEngine, Action<string> log = null)
+    public CheapestTravelFinder(ITravelGraphBuildEngine graphEngine)
     {
         _graphEngine = graphEngine ?? throw new ArgumentNullException(nameof(graphEngine));
-        _log = log ?? _trace;
     }
-
 
     public Result<SortedDictionary<string, decimal>> FindShortestPath(Location startingPoint, Location destination, List<Travel> travels)
     {
@@ -38,9 +33,9 @@ public class CheapestTravelFinder
         unvisited.Enqueue(source, 0);
         distance.Add(source.Name, 0);
 
-        foreach(var (key, node) in nodes)
+        foreach (var (key, node) in nodes)
         {
-            if(node != source)
+            if (node != source)
             {
                 distance.Add(key, decimal.MaxValue);
                 unvisited.Enqueue(node, distance[node.Name]);
@@ -51,11 +46,11 @@ public class CheapestTravelFinder
         {
             var node = unvisited.Dequeue();
 
-            foreach(var link in node.Links)
+            foreach (var link in node.Links)
             {
                 var alt = distance[node.Name] + link.Weight;
 
-                if(alt < distance[link.Destination])
+                if (alt < distance[link.Destination])
                 {
                     distance[link.Destination] = alt;
                 }
@@ -65,7 +60,7 @@ public class CheapestTravelFinder
         return Result<SortedDictionary<string, decimal>>.Success(distance);
     }
 
-    public Result<SortedDictionary<string, decimal>> LocationNotFound(bool startPointExists)
+    private static Result<SortedDictionary<string, decimal>> LocationNotFound(bool startPointExists)
     {
         if (startPointExists is false)
             return Result<SortedDictionary<string, decimal>>.Fail("STARTING_POINT_NOT_EXISTS", "Starting point not found in travel list");
@@ -104,11 +99,5 @@ public class CheapestTravelFinder
             return DirectedGraph.Null;
 
         return result.Value;
-    }
-
-    private void CheckNulls(params object[] args)
-    {
-        foreach (var arg in args)
-            ArgumentNullException.ThrowIfNull(arg);
     }
 }

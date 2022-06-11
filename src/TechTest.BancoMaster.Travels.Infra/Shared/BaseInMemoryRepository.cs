@@ -4,7 +4,7 @@ using Awarean.Sdk.SharedKernel.Delegates;
 using Microsoft.Extensions.Logging;
 
 namespace TechTest.BancoMaster.Travels.Infra.Shared;
-public abstract class BaseInMemoryRepository<TEntity, TId>
+public abstract class BaseInMemoryRepository<TEntity, TId, TLogger>
     : ICommandRepository<TEntity, TId>, IQueryRepository<TEntity, TId>
     where TEntity : Entity<TId>
 {
@@ -12,9 +12,9 @@ public abstract class BaseInMemoryRepository<TEntity, TId>
     protected abstract TEntity NullValue { get; }
 
     private readonly string entityType = typeof(TEntity).Name;
-    private readonly ILogger _logger;
+    private readonly ILogger<TLogger> _logger;
 
-    public BaseInMemoryRepository(ILogger logger)
+    public BaseInMemoryRepository(ILogger<TLogger> logger)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -59,8 +59,4 @@ public abstract class BaseInMemoryRepository<TEntity, TId>
         Data[id] = updatedEntity;
         return Task.CompletedTask;
     }
-
-    protected KeyValuePair<TId?, TEntity> GetUsing(Func<KeyValuePair<TId?, TEntity>, bool> predicate)
-        => Data.DefaultIfEmpty(KeyValuePair.Create(NullValue.Id ?? default, NullValue))
-            .SingleOrDefault(predicate);
 }

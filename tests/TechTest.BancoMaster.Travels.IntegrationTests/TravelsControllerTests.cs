@@ -19,8 +19,7 @@ namespace TechTest.BancoMaster.Travels.IntegrationTests
 
             var content = await response.Content.ReadAsStringAsync();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            content.Should().Contain("\"TotalTripAmount\": 40.00");
+            content.Should().Contain("\"TotalAmount\": 40.00");
         }
-
     }
 }

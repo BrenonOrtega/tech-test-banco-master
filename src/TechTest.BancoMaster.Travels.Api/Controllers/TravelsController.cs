@@ -1,7 +1,6 @@
 ﻿using Awarean.Sdk.Result;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using TechTest.BancoMaster.Travels.Api.Models.Requests;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
 namespace TechTest.BancoMaster.Travels.Api.Controllers
@@ -21,12 +20,24 @@ namespace TechTest.BancoMaster.Travels.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetCheapestTravelAsync([FromRoute] SearchCheapestTravelRequest request)
+        public async Task<IActionResult> GetCheapestTravelAsync(string from, string to)
         {
-            if (string.IsNullOrEmpty(request.From) || string.IsNullOrEmpty(request.To))
+            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to))
                 return BadRequest(Error.Create("INVALID_PARAMETERS", "Starting point or destination point missing"));
 
-            var result = await _service.GetCheapestPathAsync(request.From, request.To);
+            var result = await _service.GetCheapestPathAsync(from, to);
+
+            if (result.IsFailed)
+                return BadRequest(result.Error);
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetCheapestTravelAsync([FromQuery] int offset, [FromQuery] int pageSize = 100)
+        {
+            var result = await _service.GetTravelsAsync(offset, pageSize);
 
             if (result.IsFailed)
                 return BadRequest(result.Error);

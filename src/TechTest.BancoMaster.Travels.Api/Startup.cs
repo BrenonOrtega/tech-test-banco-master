@@ -1,4 +1,5 @@
-﻿using TechTest.BancoMaster.Travels.Application.Extensions;
+﻿using Microsoft.AspNetCore.HttpLogging;
+using TechTest.BancoMaster.Travels.Application.Extensions;
 using TechTest.BancoMaster.Travels.Infra.Extensions;
 
 public class Startup 
@@ -14,13 +15,16 @@ public class Startup
     {
         services.AddControllers();
 
+        services.AddLogging()
+            .AddHttpLogging(x => x.LoggingFields = HttpLoggingFields.Request | HttpLoggingFields.ResponseStatusCode | HttpLoggingFields.Response);
+
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 
         services.AddApplicationServices()
             .AddInfrastructure();
     }
-
+     
     public void Configure(WebApplication app)
     {
         var env = app.Environment;

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
@@ -24,7 +25,8 @@ public static class FixtureHelper
     {
         var nodeBuilder = new NodeBuilder();
         var graphBuilder = new GraphBuilder();
+        var logger = Substitute.For<ILogger<TravelGraphBuildEngine>>();
 
-        return new TravelGraphBuildEngine(graphBuilder, nodeBuilder, (x, y) => Trace.WriteLine(x, "Test"));
+        return new TravelGraphBuildEngine(graphBuilder, nodeBuilder, logger);
     }
 }
