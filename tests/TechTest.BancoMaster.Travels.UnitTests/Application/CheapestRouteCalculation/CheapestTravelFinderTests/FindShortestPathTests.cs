@@ -23,7 +23,7 @@ public class FindShortestPathTests
 
         // Then
         result.IsSuccess.Should().BeTrue();
-        result.Value[destination].Should().Be(40);
+        result.Value.Last.Value.CostFromSource.Should().Be(40);
     }
 
     [Fact]

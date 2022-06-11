@@ -3,4 +3,7 @@ using TechTest.BancoMaster.Travels.Domain.Travels;
 
 namespace TechTest.BancoMaster.Travels.UnitTests.Fixtures;
 
-public record MockNode(Location Location) : Node(Location);
+public class MockNode : Node
+{
+    public MockNode(Location Location) : base(Location, 0) {  }
+}
