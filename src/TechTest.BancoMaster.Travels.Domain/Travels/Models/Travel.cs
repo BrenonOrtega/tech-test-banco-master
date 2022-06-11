@@ -19,4 +19,6 @@ public class Travel : Entity<string>
         Amount = amount;
         Id = Connection.Id;
     }
+
+    public static readonly Travel Null = new Travel("Empty", "Empty", Money.Null);
 }
