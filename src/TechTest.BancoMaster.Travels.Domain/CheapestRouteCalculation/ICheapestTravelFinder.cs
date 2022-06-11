@@ -5,6 +5,6 @@ namespace TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation
 {
     public interface ICheapestTravelFinder
     {
-        public Result<SortedDictionary<string, decimal>> FindShortestPath(Location startingPoint, Location destination, List<Travel> travels);
+        public Result<LinkedList<(string Location, decimal CostFromSource)>> FindShortestPath(Location startingPoint, Location destination, List<Travel> travels);
     }
 }

@@ -13,6 +13,7 @@ namespace TechTest.BancoMaster.Travels.Application.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<ITravelService, TravelService>();
+            services.AddScoped<ICheapestTravelFinder, CheapestTravelFinder>();
 
             services.AddBuilders();
             services.AddGraphEngines();

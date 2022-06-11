@@ -9,7 +9,7 @@ public class NodeBuilder : INodeBuilder
     public INodeBuilder Create(string node)
     {
         Clear();
-        _instance = new Node(node);
+        _instance = new Node(node, decimal.MaxValue);
 
         return this;
     }

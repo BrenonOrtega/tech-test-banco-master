@@ -10,12 +10,16 @@ public class CheapestTravelFinder : ICheapestTravelFinder
 {
     private readonly ITravelGraphBuildEngine _graphEngine;
 
+    Dictionary<string, Node> _nodeDict = new();
+    List<Link> _routes = new();
+    HashSet<string> _unvisited = new();
+
     public CheapestTravelFinder(ITravelGraphBuildEngine graphEngine)
     {
         _graphEngine = graphEngine ?? throw new ArgumentNullException(nameof(graphEngine));
     }
 
-    public Result<SortedDictionary<string, decimal>> FindShortestPath(Location startingPoint, Location destination, List<Travel> travels)
+    public Result<LinkedList<(string Location, decimal CostFromSource)>> FindShortestPath(Location startingPoint, Location destination, List<Travel> travels)
     {
         var (startPointExists, destinationExists) = CheckLocations(travels, startingPoint, destination);
 
@@ -23,49 +27,83 @@ public class CheapestTravelFinder : ICheapestTravelFinder
             return LocationNotFound(startPointExists);
 
         var graph = MakeGraph(travels);
-        var nodes = graph.Nodes;
+        InitGraph(graph);
 
-        var source = nodes[startingPoint];
+        // StartinPoint distance to self.
+        _nodeDict[startingPoint].Weight = 0;
 
-        var unvisited = new PriorityQueue<Node, decimal>();
-        var distance = new SortedDictionary<string, decimal>();
+        var queue = new NodePriorityQueue();
+        queue.AddNodeWithPriority(_nodeDict[startingPoint]);
 
-        unvisited.Enqueue(source, 0);
-        distance.Add(source.Name, 0);
+        CheckNode(queue, destination);
 
-        foreach (var (key, node) in nodes)
-        {
-            if (node != source)
-            {
-                distance.Add(key, decimal.MaxValue);
-                unvisited.Enqueue(node, distance[node.Name]);
-            }
-        }
-
-        while (unvisited.Count > 0)
-        {
-            var node = unvisited.Dequeue();
-
-            foreach (var link in node.Links)
-            {
-                var distanceFromSource = distance[link.StartingPoint] + link.Weight;
-
-                if (distanceFromSource < distance[link.Destination])
-                {
-                    distance[link.Destination] = distanceFromSource;
-                }
-            }
-        }
-
-        return Result<SortedDictionary<string, decimal>>.Success(distance);
+        var path = FindShortestPath(startingPoint, destination);
+        return Result<LinkedList<(string Location, decimal CostFromSource)>>.Success(path);
     }
 
-    private static Result<SortedDictionary<string, decimal>> LocationNotFound(bool startPointExists)
+    private LinkedList<(string Location, decimal CostFromSource)> FindShortestPath(string startNode, string destNode)
+    {
+        var pathList = new LinkedList<(string Location, decimal CostFromSource)>();
+
+        pathList.AddLast((_nodeDict[destNode].Name, _nodeDict[destNode].Weight));
+
+        Node currentNode = _nodeDict[destNode];
+
+        while (currentNode != _nodeDict[startNode])
+        {
+            pathList.AddFirst((currentNode.Previous.Name, currentNode.Previous.Weight));
+            currentNode = currentNode.Previous;
+        }
+
+        return pathList;
+    }
+
+    private void CheckNode(NodePriorityQueue queue, Location destination)
+    {
+        if (queue.Count == 0)
+            return;
+
+        foreach (var route in _routes.FindAll(r => r.StartingPoint == queue.First.Value.Name))
+        {
+            if (!_unvisited.Contains(route.Destination))
+                continue;
+
+            var travelledDistance = _nodeDict[queue.First.Value.Name].Weight + route.Weight;
+
+            if (travelledDistance < _nodeDict[route.Destination].Weight)
+            {
+                _nodeDict[route.Destination].Weight = travelledDistance;
+                _nodeDict[route.Destination].Previous = _nodeDict[queue.First.Value.Name];
+            }
+
+            if (!queue.HasLetter(route.Destination))
+                queue.AddNodeWithPriority(_nodeDict[route.Destination]);
+        }
+
+        _unvisited.Remove(queue.First.Value.Name);
+        queue.RemoveFirst();
+
+        CheckNode(queue, destination);
+    }
+
+    private void InitGraph(DirectedGraph graph)
+    {
+        foreach (var (key, node) in graph.Nodes)
+        {
+            _nodeDict.Add(node.Name, node);
+            _unvisited.Add(node.Name);
+
+            foreach (var link in node.Links)
+                _routes.Add(link);
+        }
+    }
+
+    private static Result<LinkedList<(string, decimal)>> LocationNotFound(bool startPointExists)
     {
         if (startPointExists is false)
-            return Result<SortedDictionary<string, decimal>>.Fail("STARTING_POINT_NOT_EXISTS", "Starting point not found in travel list");
+            return Result<LinkedList<(string, decimal)>>.Fail("STARTING_POINT_NOT_EXISTS", "Starting point not found in travel list");
 
-        return Result<SortedDictionary<string, decimal>>.Fail("DESTINATION_NOT_EXISTS", "Destination not found in travel list");
+        return Result<LinkedList<(string, decimal)>>.Fail("DESTINATION_NOT_EXISTS", "Destination not found in travel list");
     }
 
     private (bool, bool) CheckLocations(IEnumerable<Travel> travels, Location startingPoint, Location destination)
