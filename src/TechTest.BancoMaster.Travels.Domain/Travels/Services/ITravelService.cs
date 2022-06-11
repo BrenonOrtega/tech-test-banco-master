@@ -10,4 +10,7 @@ public interface ITravelService
     Task<Result<Travel>> GetTravelAsync(Location startingPoint, Location destination);
     Task<Result<ICheapestTravelResponse>> GetCheapestPathAsync(Location startingPoint, Location destination);
     Task<Result<IEnumerable<Travel>>> GetTravelsAsync(int offset=0, int size=100);
+    Task<Result<string>> AddTravelAsync(string startingPoint, string destination, decimal amount);
+    Task<Result> UpdateTravelAsync(string startingPoint, string destination, decimal amount);
+    Task<Result> DeleteTravelAsync(string travelId);
 }
