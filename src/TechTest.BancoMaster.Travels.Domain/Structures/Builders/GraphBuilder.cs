@@ -18,10 +18,10 @@ public class GraphBuilder : IGraphBuilder
 
     public IGraphBuilder AddNode(Node node)
     {
-        if (_nodes.ContainsKey(node.Name) is false)
-        {
-            _nodes.Add(node.Name, node);
-        }
+        if (_nodes.ContainsKey(node.Name))
+            throw new ArgumentException("This node already added for building");
+        
+        _nodes.Add(node.Name, node);
 
         return this;
     }

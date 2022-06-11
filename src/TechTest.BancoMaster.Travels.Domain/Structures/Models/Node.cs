@@ -7,6 +7,8 @@ public record Node(string Name)
 {
     private readonly List<Link> _links = new();
 
+    public Node Previous { get; set; }
+
     public IReadOnlyList<Link> Links { get => _links; }
 
     public virtual void AddLink(Link link)

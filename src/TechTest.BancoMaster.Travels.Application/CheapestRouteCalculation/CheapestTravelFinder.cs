@@ -48,11 +48,11 @@ public class CheapestTravelFinder : ICheapestTravelFinder
 
             foreach (var link in node.Links)
             {
-                var alt = distance[node.Name] + link.Weight;
+                var distanceFromSource = distance[link.StartingPoint] + link.Weight;
 
-                if (alt < distance[link.Destination])
+                if (distanceFromSource < distance[link.Destination])
                 {
-                    distance[link.Destination] = alt;
+                    distance[link.Destination] = distanceFromSource;
                 }
             }
         }

@@ -1,5 +1,6 @@
 using Awarean.Sdk.Result;
 using Awarean.Sdk.ValueObjects;
+using Microsoft.Extensions.Logging;
 using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.Extensions;
 using TechTest.BancoMaster.Travels.Domain.Structures;
@@ -11,14 +12,13 @@ public class TravelGraphBuildEngine : ITravelGraphBuildEngine
 {
     private readonly IGraphBuilder _graphBuilder;
     private readonly INodeBuilder _nodeBuilder;
-    private readonly Action<string, object[]> _log;
-    private static void EmptyLog(string message, object[] args) { }
+    private readonly ILogger<TravelGraphBuildEngine> _logger;
 
-    public TravelGraphBuildEngine(IGraphBuilder graphBuilder, INodeBuilder nodeBuilder, Action<string, object[]> log)
+    public TravelGraphBuildEngine(IGraphBuilder graphBuilder, INodeBuilder nodeBuilder, ILogger<TravelGraphBuildEngine> logger)
     {
         _graphBuilder = graphBuilder ?? throw new ArgumentNullException(nameof(graphBuilder));
         _nodeBuilder = nodeBuilder ?? throw new ArgumentNullException(nameof(nodeBuilder));
-        _log = log ?? EmptyLog;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public Result<DirectedGraph> BuildGraph(IEnumerable<Travel> travelList)
@@ -38,9 +38,9 @@ public class TravelGraphBuildEngine : ITravelGraphBuildEngine
     private DirectedGraph MakeGraphFromTravels(IEnumerable<Travel> travels)
     {
         var locations = GetAllLocations(travels);
-        _log($"Found a total of {travels.Count()} - {travels.FormatStringFor(x => x.Connection.FromTo)}", null);
+        _logger.LogInformation($"Found a total of {travels.Count()} - {travels.FormatStringFor(x => x.Connection.FromTo)}");
 
-        _log($"Building Graph for {locations.ToFormatString()}", null);
+        _logger.LogInformation($"Building Graph for {locations.ToFormatString()}");
         foreach (var location in locations)
         {
             var nodeLinks = travels
@@ -64,7 +64,7 @@ public class TravelGraphBuildEngine : ITravelGraphBuildEngine
             _nodeBuilder.LinkTo(destination, weight);
 
         var node = _nodeBuilder.Build();
-        _log($"Graph's node Build for location: {node.Name} containing {node.Links.Count} links to other places - {node.Links.ToFormatString()}", null);
+        _logger.LogInformation($"Graph's node Build for location: {node.Name} containing {node.Links.Count} links to other places - {node.Links.ToFormatString()}");
 
         return node;
     }
@@ -86,7 +86,7 @@ public class TravelGraphBuildEngine : ITravelGraphBuildEngine
     private Result<DirectedGraph> HandleException(Exception ex)
     {
         var message = $"Failed trying to build graph for travel route, exception happened : {ex}";
-        _log(message, null);
+        _logger.LogInformation(message);
         return Result<DirectedGraph>.Fail("GRAPH_BUILDING_ERROR", message);
     }
 }

@@ -5,7 +5,7 @@ using TechTest.BancoMaster.Travels.Infra.Shared;
 
 namespace TechTest.BancoMaster.Travels.Infra.Travels.Repositories;
 
-public class TravelRepository : BaseInMemoryRepository<Travel, string>, ITravelRepository
+public class TravelRepository : BaseInMemoryRepository<Travel, string, TravelRepository>, ITravelRepository
 {
     private Dictionary<string, Travel> _travels;
 
@@ -20,5 +20,10 @@ public class TravelRepository : BaseInMemoryRepository<Travel, string>, ITravelR
 
     public Task<IEnumerable<Travel>> GetConnectionLocations(Location startingPoint, Location destination) =>
         GetWhereAsync(x => x.Id.Contains(startingPoint) || x.Id.Contains(destination));
+
+    public async Task<IEnumerable<Travel>> GetTravelsAsync(int offset = 0, int size = 100)
+    {
+        return Data.Skip(offset * size).Take(size).Select(x => x.Value);
+    }
 }
 

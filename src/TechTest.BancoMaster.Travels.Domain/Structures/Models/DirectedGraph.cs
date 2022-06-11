@@ -4,11 +4,11 @@ using System.Collections.Immutable;
 namespace TechTest.BancoMaster.Travels.Domain.Structures
 {
     public class DirectedGraph
-    {
+    { 
         private Dictionary<string, Node> _nodes { get; } = new();
         public ImmutableDictionary<string, Node> Nodes => _nodes.ToImmutableDictionary();
 
-        public void AddNodes(IEnumerable<Node> nodes)
+         public void AddNodes(IEnumerable<Node> nodes)
         {
             foreach (var node in nodes)
                 AddNode(node);
@@ -23,7 +23,7 @@ namespace TechTest.BancoMaster.Travels.Domain.Structures
                 throw new ArgumentException("This Node Already exists in the graph");
             
             _nodes.Add(node.Name, node);
-        }
+        } 
 
         public static readonly DirectedGraph Null = new();
     }
