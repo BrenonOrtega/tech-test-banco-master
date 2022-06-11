@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  techtest.bancomaster.travels.api:
+    image: ${DOCKER_REGISTRY-}techtestbancomastertravelsapi
+    build:
+      context: .
+      dockerfile: src/TechTest.BancoMaster.Travels.Api/Dockerfile
