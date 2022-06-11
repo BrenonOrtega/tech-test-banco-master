@@ -1,6 +1,7 @@
 using System.Text;
 using Awarean.Sdk.ValueObjects;
 using TechTest.BancoMaster.Travels.Domain.Travels;
+using TechTest.BancoMaster.Travels.Domain.Travels.Contracts;
 
 namespace TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation.Contracts
 {

@@ -15,4 +15,8 @@
     <ProjectReference Include="..\TechTest.BancoMaster.Travels.Domain\TechTest.BancoMaster.Travels.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Travels\Contracts\" />
+  </ItemGroup>
+
 </Project>
