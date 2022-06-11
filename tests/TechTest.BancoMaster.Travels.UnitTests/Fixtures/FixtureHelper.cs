@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation;
+using TechTest.BancoMaster.Travels.Domain.Structures;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
 namespace TechTest.BancoMaster.Travels.UnitTests.Fixtures;
@@ -21,9 +22,9 @@ public static class FixtureHelper
 
     internal static ITravelGraphBuildEngine GetTravelGraphBuildEngine()
     {
-        var nodeBuilder = new TravelNodeBuilder();
-        var graphBuilder = new TravelGraphBuilder();
+        var nodeBuilder = new NodeBuilder();
+        var graphBuilder = new GraphBuilder();
 
-        return new TravelGraphBuildEngine(graphBuilder, nodeBuilder, x => Trace.WriteLine(x));
+        return new TravelGraphBuildEngine(graphBuilder, nodeBuilder, (x, y) => Trace.WriteLine(x, "Test"));
     }
 }

@@ -9,7 +9,7 @@ public class BuildingGraphTests
     public void Adding_Distinct_Nodes_Should_Work()
     {
         var nodeQuantity = 10;
-        var sut = new TravelGraphBuilder();
+        var sut = new GraphBuilder();
 
         var nodes = GetNodes(10);
 
@@ -23,7 +23,7 @@ public class BuildingGraphTests
 
     public static IEnumerable<Node> GetNodes(int quantity)
     {
-        var nodeBuilder = new TravelNodeBuilder();
+        var nodeBuilder = new NodeBuilder();
         var random = new Random();
         var nodes = Enumerable.Range(0, quantity)
             .Select(x => nodeBuilder.Create($"node {x}")

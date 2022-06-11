@@ -1,4 +1,4 @@
-﻿using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
+﻿using TechTest.BancoMaster.Travels.Domain.Structures;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 
 namespace TechTest.BancoMaster.Travels.UnitTests.Application.CheapestRouteCalculation.TravelNodeBuilderTests;
@@ -8,7 +8,7 @@ public class BuildingNodeTests
     [Fact]
     public void Valid_Links_Should_Build_Correctly()
     {
-        var sut = new TravelNodeBuilder();
+        var sut = new NodeBuilder();
 
         var id = "CBG";
         sut.Create(id)
@@ -27,7 +27,7 @@ public class BuildingNodeTests
     [Fact]
     public void Building_Node_With_Repeated_Links_Should_Throw()
     {
-        var sut = new TravelNodeBuilder();
+        var sut = new NodeBuilder();
 
         var id = "CBG";
         var act = () => sut.Create(id)
@@ -42,7 +42,7 @@ public class BuildingNodeTests
     [Fact]
     public void Building_Node_After_Clearing_Should_Return_Null_Object()
     {
-        var sut = new TravelNodeBuilder();
+        var sut = new NodeBuilder();
 
         var id = "CBG";
         var node = sut.Create(id)

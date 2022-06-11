@@ -1,7 +1,7 @@
 using Awarean.Sdk.ValueObjects;
 using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation;
 using TechTest.BancoMaster.Travels.Application.CheapestRouteCalculation.Contracts;
-using TechTest.BancoMaster.Travels.Domain.CheapestRouteCalculation.Builders;
+using TechTest.BancoMaster.Travels.Domain.Structures;
 using TechTest.BancoMaster.Travels.Domain.Travels;
 using TechTest.BancoMaster.Travels.Domain.Travels.Repositories;
 using static TechTest.BancoMaster.Travels.UnitTests.Fixtures.FixtureHelper;
@@ -10,16 +10,16 @@ namespace TechTest.BancoMaster.Travels.UnitTests.Application.SearchEngine.Travel
 
 public class MakeDirectedGraphTests
 {
-    private readonly ITravelNodeBuilder _nodeBuilder;
-    private readonly ITravelGraphBuilder _graphBuilder;
-    public MakeDirectedGraphTests() => (_nodeBuilder, _graphBuilder) = (new TravelNodeBuilder(), new TravelGraphBuilder());
+    private readonly INodeBuilder _nodeBuilder;
+    private readonly IGraphBuilder _graphBuilder;
+    public MakeDirectedGraphTests() => (_nodeBuilder, _graphBuilder) = (new NodeBuilder(), new GraphBuilder());
 
     [Fact]
     public void Valid_Travel_List_Should_Build_Graph()
     {
         // Given
         var travelList = GetTravelList();
-        var sut = new TravelGraphBuildEngine(_graphBuilder, _nodeBuilder, x => Console.WriteLine(x));
+        var sut = new TravelGraphBuildEngine(_graphBuilder, _nodeBuilder, (x, y) => Console.WriteLine(x, y));
 
         // When
         var result = sut.BuildGraph(travelList);
