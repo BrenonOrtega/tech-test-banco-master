@@ -18,8 +18,15 @@ public class TravelRepository : BaseInMemoryRepository<Travel, string, TravelRep
 
     protected override Travel NullValue => Travel.Null;
 
-    public Task<IEnumerable<Travel>> GetConnectionLocations(Location startingPoint, Location destination) =>
-        GetWhereAsync(x => x.Id.Contains(startingPoint) || x.Id.Contains(destination));
+    public async Task<IEnumerable<Travel>> GetConnectionLocations(Location startingPoint, Location destination)
+    {
+        var firstQuery = await GetWhereAsync(x => x.Id.Contains(startingPoint) || x.Id.Contains(destination));
+        var locations = firstQuery.SelectMany(x => new[] { x.Connection.StartingPoint, x.Connection.Destination }).ToHashSet();
+
+        var queried = await GetWhereAsync(x => locations.Contains(x.Connection.StartingPoint) || locations.Contains(x.Connection.Destination));
+
+        return queried;
+    }
 
     public async Task<IEnumerable<Travel>> GetTravelsAsync(int offset = 0, int size = 100)
     {
