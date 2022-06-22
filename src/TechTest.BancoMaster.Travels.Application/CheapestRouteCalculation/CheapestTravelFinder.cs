@@ -14,10 +14,8 @@ public class CheapestTravelFinder : ICheapestTravelFinder
     List<Link> _routes = new();
     HashSet<string> _unvisited = new();
 
-    public CheapestTravelFinder(ITravelGraphBuildEngine graphEngine)
-    {
+    public CheapestTravelFinder(ITravelGraphBuildEngine graphEngine) => 
         _graphEngine = graphEngine ?? throw new ArgumentNullException(nameof(graphEngine));
-    }
 
     public Result<LinkedList<(string Location, decimal CostFromSource)>> FindShortestPath(Location startingPoint, Location destination, List<Travel> travels)
     {

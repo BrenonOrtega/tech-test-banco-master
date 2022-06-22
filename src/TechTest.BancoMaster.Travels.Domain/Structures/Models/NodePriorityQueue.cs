@@ -32,7 +32,8 @@ public class NodePriorityQueue : LinkedList<Node>
     {
         for (LinkedListNode<Node> it = this.First; it != null; it = it.Next)
         {
-            if (it.Value.Name == letter) { return true; }
+            if (it.Value.Name == letter)
+                return true;
         }
         return false;
     }

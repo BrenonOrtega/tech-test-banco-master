@@ -21,6 +21,7 @@ Origem: GRU, Destino: ORL, Valor: 56
 Origem: ORL, Destino: CDG, Valor: 5
 Origem: SCL, Destino: ORL, Valor: 20
 ```
+
 ## Interface Rest
     A interface Rest deverá suportar o CRUD de rotas:
     - Manipulação de rotas, dados podendo ser persistidos em arquivo, bd local, etc...

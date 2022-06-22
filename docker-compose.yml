@@ -1,8 +1,29 @@
 version: '3.4'
 
+networks:
+  travels-network:
+    driver: bridge
 services:
   techtest.bancomaster.travels.api:
     image: ${DOCKER_REGISTRY-}techtestbancomastertravelsapi
     build:
       context: .
       dockerfile: src/TechTest.BancoMaster.Travels.Api/Dockerfile
+    networks:
+      - travels-network
+    depends_on:
+      - database
+  database:
+    image: postgres
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    ports: 
+      - "5432:5432"
+    environment: 
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "travels-db"
+    networks:
+      - travels-network

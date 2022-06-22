@@ -7,12 +7,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="microsoft.EntityFrameworkCore.Design" Version="6.0.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
+     <PackageReference Include="serilog" Version="2.11.0" />
+     <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
+
+     <InternalsVisibleTo Include="TechTest.BancoMaster.Travels.UnitTests" />
+     <InternalsVisibleTo Include="TechTest.BancoMaster.Travels.IntegrationTests" />
   </ItemGroup>	
 
   <ItemGroup Label="ProjectReferences">
     <ProjectReference Include="..\TechTest.BancoMaster.Travels.Domain\TechTest.BancoMaster.Travels.Domain.csproj" />
+  </ItemGroup>	
+
+  <ItemGroup>
+    <Folder Include="Context\Migrations\" />
   </ItemGroup>
 
 </Project>
